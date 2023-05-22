@@ -16,32 +16,23 @@ use Symfony\Component\HttpFoundation\Request;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
-// Path: routes/api.php
-// Add the following route to the file:
-Route::post('/login', function (Request $request) {
-    // validate the incoming request data
-    $request->validate([
-        'email' => 'required|string',
-        'password' => 'required|string',
+Route::post('/auth/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
+Route::post('/auth/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
+
+Route::middleware(['auth:sanctum'])->group(function () {
+
+    Route::apiResources([
+        'category' => \App\Http\Controllers\Api\CategoryController::class,
+        'shop' => \App\Http\Controllers\Api\ShopController::class,
     ]);
 
-    // attempt to log the user in
-    if (Auth::attempt($request->only('email', 'password'))) {
-        // return the user object
-        return response()->json(
-            [
-                "email" => Auth::user()->email,
-                "access_token" => Auth::user()->createToken('api-token')->plainTextToken,
-            ],
-            200
-        );
-    } else {
-        return response()->json([
-            'error' => 'Invalid credentials'
-        ], 401);
-    }
-})->name('login');
+    Route::post('/shop/{shop}/upload-logo', [\App\Http\Controllers\Api\ShopLogoController::class, 'uploadLogo']);
+    Route::delete('/shop/{shop}/delete-logo', [\App\Http\Controllers\Api\ShopLogoController::class, 'deleteLogo']);
+    Route::post('/shop/{shop}/upload-cover', [\App\Http\Controllers\Api\ShopCoverController::class, 'uploadCover']);
+    Route::delete('/shop/{shop}/delete-cover', [\App\Http\Controllers\Api\ShopCoverController::class, 'deleteCover']);
+
+    require __DIR__ . '/api/user.php';
+
+    require __DIR__ . '/api/admin.php';
+});

@@ -18,9 +18,19 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
+
+        'first_name',
+        'last_name',
+        'phone_number',
+
+        'address',
+        'city',
+        'zip_code',
+        'country',
+
+        'photo',
     ];
 
     /**
@@ -42,4 +52,40 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get the user's full name.
+     * 
+     */
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+    /**
+     * Uppercase the last name when setting it.
+     * 
+     */
+    public function setLastNameAttribute(string $value): void
+    {
+        $this->attributes['last_name'] = strtoupper($value);
+    }
+    public function markEmailAsVerified(): void
+    {
+        $this->forceFill([
+            'email_verified_at' => $this->freshTimestamp(),
+        ])->save();
+    }
+    public function markEmailAsUnverified(): void
+    {
+        $this->forceFill([
+            'email_verified_at' => null,
+        ])->save();
+    }
+    /**
+     * Send the email verification notification.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        //$this->notify(new \App\Notifications\VerifyEmail);
+    }
 }

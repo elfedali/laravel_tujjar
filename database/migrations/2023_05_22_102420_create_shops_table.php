@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('shops', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('owner_id')->constrained('users');
+            $table->foreignId('category_id')->nullable()->constrained('categories');
 
-            $table->string('email')->unique();
-
-            $table->string('first_name')->nullable();
-            $table->string('last_name')->nullable();
+            $table->string('name');
+            $table->string('slug')->unique();
             $table->string('phone_number', 20)->nullable();
 
             $table->string('address')->nullable();
@@ -25,11 +25,14 @@ return new class extends Migration
             $table->string('zip_code', 10)->nullable();
             $table->string('country')->nullable();
 
-            $table->string('photo')->nullable();
+            $table->string('logo_photo')->nullable();
+            $table->string('cover_photo')->nullable();
 
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->boolean('is_enabled')->default(true);
+            $table->boolean('is_verified')->default(false);
+
+
+
             $table->timestamps();
         });
     }
@@ -39,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('shops');
     }
 };
