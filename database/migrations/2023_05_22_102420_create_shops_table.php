@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('shops', function (Blueprint $table) {
             $table->id();
             $table->foreignId('owner_id')->constrained('users');
-            $table->foreignId('category_id')->nullable()->constrained('categories');
 
             $table->string('name');
             $table->string('slug')->unique();

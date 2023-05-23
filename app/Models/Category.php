@@ -26,4 +26,9 @@ class Category extends Model
         $this->slug = \Str::slug($this->name);
         $this->save();
     }
+
+    public function shops()
+    {
+        return $this->belongsToMany(Shop::class, 'category_shop', 'category_id', 'shop_id');
+    }
 }

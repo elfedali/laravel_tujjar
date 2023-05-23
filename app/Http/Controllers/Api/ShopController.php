@@ -28,7 +28,6 @@ class ShopController extends Controller
         try {
             $validatedShop = Validator::make($request->all(), [
                 'owner_id' => 'required|integer|exists:users,id',
-                'category_id' => 'required|integer|exists:categories,id',
 
                 'name' => 'required|string|max:255',
 
@@ -38,6 +37,8 @@ class ShopController extends Controller
                 'zip_code' => 'nullable|digits:5|integer',
                 'country' => 'nullable|string|max:255',
 
+                'categories' => 'required|array',
+                'categories.*' => 'required|integer|exists:categories,id',
             ]);
             if ($validatedShop->fails()) {
                 return response()->json([
@@ -46,6 +47,10 @@ class ShopController extends Controller
                 ], 400);
             }
             $shop = Shop::create($validatedShop->validated());
+            // attach categories
+            $shop->categories()->attach($validatedShop->validated()['categories']);
+            $shop->load('categories');
+
             return response()->json([
                 'status' => true,
                 'message' => 'Shop created successfully',
@@ -64,6 +69,7 @@ class ShopController extends Controller
      */
     public function show(Shop $shop)
     {
+        $shop->load('categories');
         return response()->json([
             'status' => true,
             'message' => 'Shop retrieved successfully',
@@ -79,7 +85,6 @@ class ShopController extends Controller
         try {
             $validatedShop = Validator::make($request->all(), [
                 'owner_id' => 'required|integer|exists:users,id',
-                'category_id' => 'required|integer|exists:categories,id',
 
                 'name' => 'string|max:255',
 
@@ -91,6 +96,9 @@ class ShopController extends Controller
                 'logo_photo' => 'nullable|string|max:255',
                 'cover_photo' => 'nullable|string|max:255',
 
+                'categories' => 'array',
+                'categories.*' => 'integer|exists:categories,id',
+
             ]);
             if ($validatedShop->fails()) {
                 return response()->json([
@@ -100,7 +108,17 @@ class ShopController extends Controller
             }
             $shop->update($validatedShop->validated());
             $shop->updateSlug();
+
+            // attach categories
+            if (isset($validatedShop->validated()['categories'])) {
+                $shop->categories()->sync($validatedShop->validated()['categories']);
+            } else {
+                $shop->categories()->sync([]);
+            }
+
             $shop->save();
+
+            $shop->load('categories');
 
             return response()->json([
                 'status' => true,
@@ -122,6 +140,7 @@ class ShopController extends Controller
     {
 
         $shop->delete();
+
         return response()->json([
             'status' => true,
             'message' => 'Shop deleted successfully',

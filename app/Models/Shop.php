@@ -12,7 +12,6 @@ class Shop extends Model
 
     protected $fillable = [
         'owner_id',
-        'category_id',
 
         'name',
         'slug',
@@ -35,9 +34,9 @@ class Shop extends Model
         return $this->belongsTo(User::class, 'owner_id');
     }
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'category_shop', 'shop_id', 'category_id');
     }
 
     // slug will be created automatically
