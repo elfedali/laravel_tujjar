@@ -6,10 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Auth\VerifiesEmails;
 
 
 class AuthController extends Controller
 {
+
+    use VerifiesEmails;
 
     public function login(Request $request)
     {
@@ -63,6 +67,9 @@ class AuthController extends Controller
                 $validateUser->validated(),
                 ['password' => bcrypt($request->password)]
             ));
+
+            event(new Registered($user)); // send email verification to user
+            $user->refresh(); // refresh user data
             return response()->json([
                 'status' => true,
                 'message' => 'User created successfully',

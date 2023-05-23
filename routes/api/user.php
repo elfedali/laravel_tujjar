@@ -8,3 +8,9 @@
    Route::post('/user/me/photo', [\App\Http\Controllers\Api\UserPhotoController::class, 'updatePhoto']);
    Route::delete('/user/me/photo', [\App\Http\Controllers\Api\UserPhotoController::class, 'deletePhoto']);
    // Route::get('/user/me', [\App\Http\Controllers\Api\UserController::class, 'me']);
+   // verify email
+   Route::get('/email/verify/{id}/{hash}', function (Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+      $request->fulfill();
+
+      return redirect('/home');
+   })->middleware(['auth', 'signed'])->name('verification.verify');
