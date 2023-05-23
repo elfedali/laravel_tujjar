@@ -39,6 +39,9 @@ class ShopController extends Controller
 
                 'categories' => 'required|array',
                 'categories.*' => 'required|integer|exists:categories,id',
+
+                'tags' => 'array',
+                'tags.*' => 'integer|exists:tags,id',
             ]);
             if ($validatedShop->fails()) {
                 return response()->json([
@@ -49,7 +52,15 @@ class ShopController extends Controller
             $shop = Shop::create($validatedShop->validated());
             // attach categories
             $shop->categories()->attach($validatedShop->validated()['categories']);
+
+            if (isset($validatedShop->validated()['tags'])) {
+                $shop->tags()->attach($validatedShop->validated()['tags']);
+            } else {
+                $shop->tags()->attach([]);
+            }
+
             $shop->load('categories');
+            $shop->load('tags');
 
             return response()->json([
                 'status' => true,
@@ -99,6 +110,9 @@ class ShopController extends Controller
                 'categories' => 'array',
                 'categories.*' => 'integer|exists:categories,id',
 
+                'tags' => 'array',
+                'tags.*' => 'integer|exists:tags,id',
+
             ]);
             if ($validatedShop->fails()) {
                 return response()->json([
@@ -116,9 +130,17 @@ class ShopController extends Controller
                 $shop->categories()->sync([]);
             }
 
+            if (isset($validatedShop->validated()['tags'])) {
+                $shop->tags()->sync($validatedShop->validated()['tags']);
+            } else {
+                $shop->tags()->sync([]);
+            }
+
+
             $shop->save();
 
             $shop->load('categories');
+            $shop->load('tags');
 
             return response()->json([
                 'status' => true,

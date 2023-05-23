@@ -39,6 +39,11 @@ class Shop extends Model
         return $this->belongsToMany(Category::class, 'category_shop', 'shop_id', 'category_id');
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'shop_tag', 'shop_id', 'tag_id');
+    }
+
     // slug will be created automatically
     protected static function booted(): void
     {

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Category;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class TagController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,12 +16,10 @@ class CategoryController extends Controller
     {
         return response()->json([
             'status' => true,
-            'message' => 'Categories retrieved successfully',
-            'data' => Category::all(),
+            'message' => 'Tags retrieved successfully',
+            'data' => Tag::all(),
         ], 200);
     }
-
-
 
     /**
      * Store a newly created resource in storage.
@@ -29,20 +27,20 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         try {
-            $validateCategory = Validator::make($request->all(), [
-                'name' => 'required|unique:categories,name',
+            $validateTag = Validator::make($request->all(), [
+                'name' => 'required|unique:tags,name',
             ]);
-            if ($validateCategory->fails()) {
+            if ($validateTag->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => $validateCategory->errors()->first(),
+                    'message' => $validateTag->errors()->first(),
                 ], 400);
             }
-            $category = Category::create($request->all());
+            $tag = Tag::create($request->all());
             return response()->json([
                 'status' => true,
-                'message' => 'Category created successfully',
-                'data' => $category,
+                'message' => 'Tag created successfully',
+                'data' => $tag,
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -55,13 +53,13 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show(Tag $tag)
     {
         try {
             return response()->json([
                 'status' => true,
-                'message' => 'Category retrieved successfully',
-                'data' => $category,
+                'message' => 'Tag retrieved successfully',
+                'data' => $tag,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -71,30 +69,28 @@ class CategoryController extends Controller
         }
     }
 
-
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Tag $tag)
     {
         try {
-            $validateCategory = Validator::make($request->all(), [
-                'name' => 'required|unique:categories,name,' . $category->id,
+            $validateTag = Validator::make($request->all(), [
+                'name' => 'required|unique:tags,name,' . $tag->id,
             ]);
-            if ($validateCategory->fails()) {
+            if ($validateTag->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => $validateCategory->errors()->first(),
+                    'message' => $validateTag->errors()->first(),
                 ], 400);
             }
-            $category->update($request->all());
-            $category->updateSlug();
+            $tag->update($request->all());
+            $tag->updateSlug();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Category updated successfully',
-                'data' => $category,
+                'message' => 'Tag updated successfully',
+                'data' => $tag,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -107,18 +103,18 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Tag $tag)
     {
         try {
-            $category->delete();
+            $tag->delete();
             return response()->json([
                 'status' => true,
-                'message' => 'Category deleted successfully',
+                'message' => 'Tag deleted successfully',
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Tag deleted successfully',
             ], 500);
         }
     }
