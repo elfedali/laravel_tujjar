@@ -42,6 +42,9 @@ class ShopController extends Controller
 
                 'tags' => 'array',
                 'tags.*' => 'integer|exists:tags,id',
+
+                "images" => "array|max:5",
+                "images.*" => "file|mimes:jpeg,png,jpg,gif|max:2048",
             ]);
             if ($validatedShop->fails()) {
                 return response()->json([
@@ -58,9 +61,22 @@ class ShopController extends Controller
             } else {
                 $shop->tags()->attach([]);
             }
+            if (isset($validatedShop->validated()['images'])) {
+                foreach ($validatedShop->validated()['images'] as $image) {
+                    $extension = $image->extension();
+                    // Generate a unique name using hashing
+                    $hashedName = hash_file('md5', $image->path()) . '.' . $extension;
+                    $image->move(public_path('uploads/shops'), $hashedName);
+
+                    $shop->images()->create([
+                        'name' => $hashedName,
+                    ]);
+                }
+            }
 
             $shop->load('categories');
             $shop->load('tags');
+            $shop->load('images');
 
             return response()->json([
                 'status' => true,
@@ -81,6 +97,8 @@ class ShopController extends Controller
     public function show(Shop $shop)
     {
         $shop->load('categories');
+        $shop->load('tags');
+        $shop->load('images');
         return response()->json([
             'status' => true,
             'message' => 'Shop retrieved successfully',
@@ -113,6 +131,9 @@ class ShopController extends Controller
                 'tags' => 'array',
                 'tags.*' => 'integer|exists:tags,id',
 
+                "images" => "array|max:5",
+                "images.*" => "file|mimes:jpeg,png,jpg,gif|max:2048",
+
             ]);
             if ($validatedShop->fails()) {
                 return response()->json([
@@ -135,12 +156,31 @@ class ShopController extends Controller
             } else {
                 $shop->tags()->sync([]);
             }
+            if (isset($validatedShop->validated()['images'])) {
+                // delete old images
+
+                foreach ($shop->images as $image) {
+                    $this->removePhoto($image->name);
+                    $image->delete();
+                }
+                foreach ($validatedShop->validated()['images'] as $image) {
+                    $extension = $image->extension();
+
+                    $hashedName = hash_file('md5', $image->path()) . '.' . $extension;
+                    $image->move(public_path('uploads/shops'), $hashedName);
+
+                    $shop->images()->create([
+                        'name' => $hashedName,
+                    ]);
+                }
+            }
 
 
             $shop->save();
 
             $shop->load('categories');
             $shop->load('tags');
+            $shop->load('images');
 
             return response()->json([
                 'status' => true,
@@ -167,5 +207,23 @@ class ShopController extends Controller
             'status' => true,
             'message' => 'Shop deleted successfully',
         ], 200);
+    }
+
+    // delete photo from storage
+    private function removePhoto($photoName)
+    {
+        try {
+            if ($photoName != null) {
+                $photoPath = public_path('uploads/shops') . '/' . $photoName;
+                if (file_exists($photoPath)) {
+                    unlink($photoPath);
+                }
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

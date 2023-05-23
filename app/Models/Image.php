@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 use App\Models\Shop;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -18,18 +19,17 @@ class Image extends Model
     ];
 
     protected $fillable = [
-        'shop_id',
-        'path',
-        'is_main',
-        'position',
-        // 'small',
-        // 'medium',
-        // 'large',
+        'name',
+        'caption',
+        'alt',
+        'title',
+        'original',
+        'small',
+        'medium',
+        'large',
     ];
-    public function shop()
-    {
-        return $this->belongsTo(Shop::class);
-    }
+
+
     public function getUrlAttribute()
     {
         return asset('storage/' . $this->path);
@@ -46,22 +46,22 @@ class Image extends Model
     {
         return asset('storage/' . $this->large);
     }
-    public function delete()
-    {
-        \Storage::delete([
-            $this->path,
-            $this->small,
-            $this->medium,
-            $this->large,
-        ]);
-        return parent::delete();
-    }
+    // public function delete()
+    // {
+    //     \Storage::delete([
+    //         $this->name,
+    //         $this->small,
+    //         $this->medium,
+    //         $this->large,
+    //     ]);
+    //     return parent::delete();
+    // }
     public function resizeAndSaveImages(): void
     {
-        $image = \Image::make($this->path);
-        foreach (self::IMAGE_SIZES as $size => $dimensions) {
-            $image->resize(...$dimensions)->save(storage_path('app/public/' . $this->{$size}));
-        }
+        // $image = \Intervention\Image\Image::make(public_path('images/' . $this->path));
+        // foreach (self::IMAGE_SIZES as $size => $dimensions) {
+        //     $image->resize(...$dimensions)->save(storage_path('app/public/' . $this->{$size}));
+        // }
     }
 
     protected static function booted(): void

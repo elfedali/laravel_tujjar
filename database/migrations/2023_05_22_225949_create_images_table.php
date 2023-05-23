@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('images', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('caption')->nullable();
 
-            $table->string('path');
-            $table->boolean('is_main')->default(false);
-            $table->integer('position')->default(0);
-            $table->foreignId('shop_id')->constrained()->onDelete('cascade');
+            $table->string('alt')->nullable();
+            $table->string('title')->nullable();
+            $table->string('original')->nullable();
 
             $table->string('small')->nullable();
             $table->string('medium')->nullable();
