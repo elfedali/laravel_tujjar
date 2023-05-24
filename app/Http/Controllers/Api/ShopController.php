@@ -99,6 +99,9 @@ class ShopController extends Controller
         $shop->load('categories');
         $shop->load('tags');
         $shop->load('images');
+        $shop->load('owner');
+        $shop->load('reviews');
+
         return response()->json([
             'status' => true,
             'message' => 'Shop retrieved successfully',

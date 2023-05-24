@@ -49,6 +49,46 @@ class Shop extends Model
         return $this->belongsToMany(Image::class, 'image_shop', 'shop_id', 'image_id');
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function scopeName($query, $name)
+    {
+        return $query->where('name', 'like', "%{$name}%");
+    }
+
+    public function scopeSlug($query, $slug)
+    {
+        return $query->where('slug', $slug);
+    }
+
+    public function scopeWithCategories($query)
+    {
+        return $query->with('categories');
+    }
+
+    public function scopeWithTags($query)
+    {
+        return $query->with('tags');
+    }
+
+    public function scopeWithImages($query)
+    {
+        return $query->with('images');
+    }
+
+    public function scopeWithReviews($query)
+    {
+        return $query->with('reviews');
+    }
+
+    public function scopeWithOwner($query)
+    {
+        return $query->with('owner');
+    }
+
     // slug will be created automatically
     protected static function booted(): void
     {

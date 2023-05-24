@@ -11,6 +11,7 @@ class Category extends Model
 
     protected $fillable = [
         'name',
+
     ];
 
     protected static function booted(): void
@@ -29,5 +30,20 @@ class Category extends Model
     public function shops()
     {
         return $this->belongsToMany(Shop::class, 'category_shop', 'category_id', 'shop_id');
+    }
+
+    public function scopeName($query, $name)
+    {
+        return $query->where('name', 'like', "%{$name}%");
+    }
+
+    public function scopeSlug($query, $slug)
+    {
+        return $query->where('slug', $slug);
+    }
+
+    public function scopeWithShops($query)
+    {
+        return $query->with('shops');
     }
 }

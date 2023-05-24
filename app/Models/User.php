@@ -104,4 +104,15 @@ class User extends Authenticatable implements MustVerifyEmail
         // send welcome email
         //$this->notify(new \App\Notifications\WelcomeEmail);
     }
+
+    // scope have a shop
+    public function scopeHaveShop($query)
+    {
+        return $query->whereHas('shop');
+    }
+    // scope don't have a shop
+    public function scopeDontHaveShop($query)
+    {
+        return $query->whereDoesntHave('shop');
+    }
 }
