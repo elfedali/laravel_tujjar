@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -86,6 +87,21 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function sendEmailVerificationNotification(): void
     {
+        event(new Registered($this)); // send email verification to user
+
+        // $this->notify(new \App\Notifications\VerifyEmail);
+        // send verify email 
         //$this->notify(new \App\Notifications\VerifyEmail);
+    }
+    /**
+     * Send the welcome email notification.
+     */
+    public function sendWelcomeEmail(): void
+    {
+        // try sending welcome email for 10 times
+
+
+        // send welcome email
+        //$this->notify(new \App\Notifications\WelcomeEmail);
     }
 }

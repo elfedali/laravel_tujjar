@@ -37,3 +37,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     require __DIR__ . '/api/admin.php';
 });
+
+
+Route::get('/email/verify/{id}/{hash}', [\App\Http\Controllers\Api\EmailVerificationController::class, 'verify'])->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+Route::post('/email/verification-notification', [\App\Http\Controllers\Api\EmailVerificationController::class, 'sendVerificationEmail'])->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
+// Route::post('/forgot-password', [\App\Http\Controllers\Api\ForgotPasswordController::class, 'sendResetLinkEmail'])->middleware('guest')->name('password.email');
+// Route::post('/reset-password', [\App\Http\Controllers\Api\ResetPasswordController::class, 'reset'])->middleware('guest')->name('password.update');
+// Route::get('/reset-password/{token}', [\App\Http\Controllers\Api\NewPasswordController::class, 'create'])->middleware('guest')->name('password.reset');
+// Route::post('/reset-password', [\App\Http\Controllers\Api\NewPasswordController::class, 'store'])->middleware('guest')->name('password.update');

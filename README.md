@@ -4,6 +4,6 @@
 
 User
 Category
-Media
 Shop
+Images
 Review
