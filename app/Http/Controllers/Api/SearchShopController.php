@@ -37,7 +37,7 @@ class SearchShopController extends Controller
 
         return response()->json([
             'message' => 'Search results',
-            'results' => $results,
+            'data' => $results,
         ]);
     }
 }
