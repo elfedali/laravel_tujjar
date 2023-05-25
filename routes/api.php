@@ -25,8 +25,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResources([
         'category' => \App\Http\Controllers\Api\CategoryController::class,
         'tag' => \App\Http\Controllers\Api\TagController::class,
-        'shop' => \App\Http\Controllers\Api\ShopController::class,
+
     ]);
+    Route::apiResource('shop', \App\Http\Controllers\Api\ShopController::class)->only(['store',  'update', 'destroy']);
 
     Route::post('/shop/{shop}/upload-logo', [\App\Http\Controllers\Api\ShopLogoController::class, 'uploadLogo']);
     Route::delete('/shop/{shop}/delete-logo', [\App\Http\Controllers\Api\ShopLogoController::class, 'deleteLogo']);
@@ -44,6 +45,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('/email/verify/{id}/{hash}', [\App\Http\Controllers\Api\EmailVerificationController::class, 'verify'])->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 Route::post('/email/verification-notification', [\App\Http\Controllers\Api\EmailVerificationController::class, 'sendVerificationEmail'])->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
 
+Route::apiResource('shop', \App\Http\Controllers\Api\ShopController::class)->only(['index', 'show']);
 
 
 // Route::post('/forgot-password', [\App\Http\Controllers\Api\ForgotPasswordController::class, 'sendResetLinkEmail'])->middleware('guest')->name('password.email');

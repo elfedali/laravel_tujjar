@@ -186,4 +186,20 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pagination
+    |--------------------------------------------------------------------------
+    |
+    | This array of pagination will be registered when this application
+    | is started. However, feel free to register as many as you wish as
+    | the pagination are "lazy" loaded so they don't hinder performance.
+    |
+    */
+
+    'pagination' => [
+        'per_page' => env('PAGINATION_LIMIT', 10),
+        'per_page_admin' => env('PAGINATION_LIMIT_ADMIN', 20),
+    ],
 ];

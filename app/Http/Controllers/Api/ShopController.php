@@ -14,10 +14,13 @@ class ShopController extends Controller
      */
     public function index()
     {
+        // Display all shops with their categories and tags in a paginated way with pagination.per_page shops per page. 
+        // The response should be a JSON object with the following structure:
+        $shops = Shop::with('categories', 'tags', 'owner')->paginate(config('app.pagination.per_page'));
         return response()->json([
             'status' => true,
             'message' => 'Shops retrieved successfully',
-            'data' => Shop::all(),
+            'data' => $shops,
         ], 200);
     }
     /**
