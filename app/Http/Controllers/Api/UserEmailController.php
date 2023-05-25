@@ -9,29 +9,30 @@ use Illuminate\Support\Facades\Validator;
 
 class UserEmailController extends Controller
 {
-
     /**
-     * Update the specified resource in storage.
+     * Update the user's email address.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function updateEmail(Request $request)
     {
         try {
-            /**
-             * @var User $user
-             */
-            $user = auth()->user();
-            $validateUser = Validator::make($request->all(), [
+            $user = $request->user();
+
+            $validator = Validator::make($request->all(), [
                 'email' => 'required|email|unique:users,email,' . $user->id,
             ]);
-            if ($validateUser->fails()) {
+
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => $validateUser->errors()->first(),
+                    'message' => $validator->errors()->first(),
                 ], 400);
             }
+
             $user->update($request->only('email'));
             $user->markEmailAsUnverified();
-            $user->sendEmailVerificationNotification();
 
             return response()->json([
                 'status' => true,

@@ -5,30 +5,36 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class UserPasswordController extends Controller
 {
+    /**
+     * Update the user's password.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updatePassword(Request $request)
     {
         try {
-            /**
-             * @var User $user
-             */
-            $user = auth()->user();
+            $user = $request->user();
 
-            $validateUser = Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'password' => 'required|confirmed',
             ]);
-            if ($validateUser->fails()) {
+
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => $validateUser->errors()->first(),
+                    'message' => $validator->errors()->first(),
                 ], 400);
             }
 
             $user->update([
-                'password' => bcrypt($request->password)
+                'password' => Hash::make($request->password)
             ]);
+
             return response()->json([
                 'status' => true,
                 'message' => 'Password updated successfully',

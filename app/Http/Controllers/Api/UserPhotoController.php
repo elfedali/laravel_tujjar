@@ -5,31 +5,45 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class UserPhotoController extends Controller
 {
+    /**
+     * Update the user's photo.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updatePhoto(Request $request)
     {
-
         try {
-            /**
-             * @var User $user
-             */
-            $user = auth()->user();
-            $validateUser = Validator::make($request->all(), [
+            $user = $request->user();
+
+            $validator = Validator::make($request->all(), [
                 'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
-            if ($validateUser->fails()) {
+
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => $validateUser->errors()->first(),
+                    'message' => $validator->errors()->first(),
                 ], 400);
             }
-            $imageName = $user->id . '_photo' . time() . '.' . $request->photo->extension();
-            $request->photo->move(public_path('uploads/users'), $imageName);
+
+            $photo = $request->file('photo');
+            $imageName = $user->id . '_photo' . time() . '.' . $photo->getClientOriginalExtension();
+
+            // Store the photo in the storage disk
+            $photo->storeAs('uploads/users', $imageName, 'public');
+
+            // Delete the previous photo if it exists
+            $this->removePhoto($user->photo);
+
             $user->update([
                 'photo' => $imageName,
             ]);
+
             return response()->json([
                 'status' => true,
                 'message' => 'User photo updated successfully',
@@ -43,17 +57,24 @@ class UserPhotoController extends Controller
         }
     }
 
+    /**
+     * Delete the user's photo.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function deletePhoto(Request $request)
     {
         try {
-            /**
-             * @var User $user
-             */
-            $user = auth()->user();
+            $user = $request->user();
+
+            // Delete the current photo if it exists
             $this->removePhoto($user->photo);
+
             $user->update([
                 'photo' => null,
             ]);
+
             return response()->json([
                 'status' => true,
                 'message' => 'User photo deleted successfully',
@@ -66,14 +87,17 @@ class UserPhotoController extends Controller
             ], 500);
         }
     }
-    // delete photo from storage
-    private function removePhoto($photoName)
+
+    /**
+     * Remove the photo from storage.
+     *
+     * @param  string|null  $photoName
+     * @return void
+     */
+    private function removePhoto(?string $photoName)
     {
-        if ($photoName != null) {
-            $photoPath = public_path('uploads/users') . '/' . $photoName;
-            if (file_exists($photoPath)) {
-                unlink($photoPath);
-            }
+        if ($photoName !== null) {
+            Storage::disk('public')->delete('uploads/users/' . $photoName);
         }
     }
 }

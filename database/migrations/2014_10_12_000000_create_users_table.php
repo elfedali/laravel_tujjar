@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
 
             $table->string('email')->unique();
+            $table->string('role')->default(\App\Models\User::ROLE_USER);
 
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->string('phone_number', 20)->nullable();
+            $table->string('phone_number', 20)->unique()->nullable();
 
             $table->string('address')->nullable();
             $table->string('city')->nullable();

@@ -7,29 +7,41 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    /**
+     * Log in the user using email or phone number.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(Request $request)
     {
         try {
-            $validateUser = Validator::make($request->all(), [
-                'email' => 'required|email',
+            $validator = Validator::make($request->all(), [
+                'login' => 'required',
                 'password' => 'required',
             ]);
-            if ($validateUser->fails()) {
+
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => $validateUser->errors()->first(),
+                    'message' => $validator->errors()->first(),
                 ], 400);
             }
-            if (!auth()->attempt($request->only('email', 'password'))) {
+
+            $loginField = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone_number';
+
+            if (!auth()->attempt([$loginField => $request->login, 'password' => $request->password])) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Invalid credentials',
                 ], 400);
             }
-            $user = User::where('email', $request->email)->first();
+
+            $user = User::where($loginField, $request->login)->first();
 
             return response()->json([
                 'status' => true,
@@ -45,24 +57,33 @@ class AuthController extends Controller
         }
     }
 
+
+    /**
+     * Register a new user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function register(Request $request)
     {
         try {
-            $validateUser = Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required',
             ]);
-            if ($validateUser->fails()) {
+
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => $validateUser->errors()->first(),
+                    'message' => $validator->errors()->first(),
                 ], 400);
             }
+
             $user = User::create(array_merge(
-                $validateUser->validated(),
-                ['password' => bcrypt($request->password)]
+                $validator->validated(),
+                ['password' => Hash::make($request->password)]
             ));
-            // TODO :: send email verification
+
             event(new Registered($user)); // send email verification to user
 
             $user->refresh(); // refresh user data

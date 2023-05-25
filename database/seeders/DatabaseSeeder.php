@@ -16,8 +16,11 @@ class DatabaseSeeder extends Seeder
 
         \App\Models\User::factory()->create([
             'email' => "webmaster@tujjar.ma",
+            'role' => \App\Models\User::ROLE_SUPER_ADMIN,
             'first_name' => 'Safouan',
             'last_name' => 'el fedali',
+            'phone_number' => '0627018957',
+
         ]);
 
         $this->call([

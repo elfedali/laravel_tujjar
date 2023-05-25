@@ -8,44 +8,44 @@ use Illuminate\Support\Facades\Validator;
 
 class UserInfoController extends Controller
 {
+    /**
+     * Update the user's information.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateInfo(Request $request)
     {
-
         try {
-            /**
-             * @var User $user
-             */
-            $user = auth()->user();
-            $validateUser = Validator::make($request->all(), [
+            $user = $request->user();
+
+            $validator = Validator::make($request->all(), [
                 'first_name' => 'nullable|string',
                 'last_name' => 'nullable|string',
-
                 'phone_number' => 'nullable|string',
-
                 'address' => 'nullable|string',
                 'city' => 'nullable|string',
                 'zip_code' => 'nullable|integer',
                 'country' => 'nullable|string',
-
             ]);
-            if ($validateUser->fails()) {
+
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => $validateUser->errors()->first(),
+                    'message' => $validator->errors()->first(),
                 ], 400);
             }
-            $user->update($request->only(
+
+            $user->update($request->only([
                 'first_name',
                 'last_name',
-
                 'phone_number',
-
                 'address',
                 'city',
                 'zip_code',
                 'country',
+            ]));
 
-            ));
             return response()->json([
                 'status' => true,
                 'message' => 'User info updated successfully',

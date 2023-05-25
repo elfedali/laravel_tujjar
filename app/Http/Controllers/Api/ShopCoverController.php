@@ -10,6 +10,14 @@ class ShopCoverController extends Controller
 {
     public function uploadCover(Request $request, Shop $shop)
     {
+        try {
+            $this->authorize('update-shop', $shop);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 403);
+        }
         $request->validate([
             'cover_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -32,6 +40,14 @@ class ShopCoverController extends Controller
 
     public function deleteCover(Request $request, Shop $shop)
     {
+        try {
+            $this->authorize('update-shop', $shop);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 403);
+        }
         $this->removeCover($shop->cover_photo);
         $shop->cover_photo = null;
         $shop->save();

@@ -10,6 +10,13 @@ class ShopLogoController extends Controller
 {
     public function uploadLogo(Request $request, Shop $shop)
     {
+        try {
+            $this->authorize('update-shop', $shop);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 403);
+        }
         $request->validate([
             'logo_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -32,6 +39,14 @@ class ShopLogoController extends Controller
 
     public function deleteLogo(Request $request, Shop $shop)
     {
+        try {
+            $this->authorize('update-shop', $shop);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 403);
+        }
+
         $this->removeLogo($shop->logo_photo);
         $shop->logo_photo = null;
         $shop->save();

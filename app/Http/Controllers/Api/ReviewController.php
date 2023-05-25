@@ -6,30 +6,25 @@ use App\Models\Shop;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
-
-
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request, Shop $shop)
     {
-        //$this->authorize('create', [Review::class, $shop]);
 
-        $request->validate([
+        $validatedData = $request->validate([
             'content' => 'required|string',
             'rating' => 'required|integer|between:1,5',
         ]);
 
         $review = $shop->reviews()->create([
-            'content' => $request->content,
-            'rating' => $request->rating,
-            'user_id' => auth()->id(),
-            'shop_id' => $shop->id,
+            'content' => $validatedData['content'],
+            'rating' => $validatedData['rating'],
+            'user_id' => Auth::id(),
         ]);
 
         return response()->json([
@@ -43,20 +38,22 @@ class ReviewController extends Controller
      */
     public function update(Request $request, Shop $shop, Review $review)
     {
-        if ($review->shop_id !== $shop->id) {
+        try {
+            $this->authorize('update', $review);
+        } catch (\Throwable $e) {
             return response()->json([
-                'message' => 'You can only edit your own review',
+                'message' => $e->getMessage(),
             ], 403);
         }
 
-        $request->validate([
+        $validatedData = $request->validate([
             'content' => 'required|string',
             'rating' => 'required|integer|between:1,5',
         ]);
 
         $review->update([
-            'content' => $request->content,
-            'rating' => $request->rating,
+            'content' => $validatedData['content'],
+            'rating' => $validatedData['rating'],
         ]);
 
         return response()->json([
@@ -65,16 +62,16 @@ class ReviewController extends Controller
         ]);
     }
 
-
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Shop $shop, Review $review)
     {
-
-        if (auth()->id() !== $review->user_id) {
+        try {
+            $this->authorize('update', $review);
+        } catch (\Throwable $e) {
             return response()->json([
-                'message' => 'You can only delete your own review',
+                'message' => $e->getMessage(),
             ], 403);
         }
 
