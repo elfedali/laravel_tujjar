@@ -14,6 +14,7 @@ class Shop extends Model
         'owner_id',
 
         'name',
+        'description',
         'slug',
         'phone_number',
 

@@ -30,6 +30,7 @@ class ShopController extends Controller
                 'owner_id' => 'required|integer|exists:users,id',
 
                 'name' => 'required|string|max:255',
+                'description' => 'nullable|string|max:255',
 
                 'phone_number' => 'nullable|string|max:255',
                 'address' => 'nullable|string|max:255',
@@ -119,6 +120,7 @@ class ShopController extends Controller
                 'owner_id' => 'required|integer|exists:users,id',
 
                 'name' => 'string|max:255',
+                'description' => 'nullable|string|max:255',
 
                 'phone_number' => 'nullable|string|max:255',
                 'address' => 'nullable|string|max:255',

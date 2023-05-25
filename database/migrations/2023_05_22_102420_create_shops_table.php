@@ -17,6 +17,7 @@ return new class extends Migration
 
             $table->string('name');
             $table->string('slug')->unique();
+            $table->text('description')->nullable();
             $table->string('phone_number', 20)->nullable();
 
             $table->string('address')->nullable();
