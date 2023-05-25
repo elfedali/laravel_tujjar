@@ -27,12 +27,16 @@ class SearchShopController extends Controller
                 $queryBuilder->where('name', 'like', "%{$query}%")
                     ->orWhere('description', 'like', "%{$query}%");
             })
+            ->where('is_enabled', true) // only enabled shops
+
             ->orWhereHas('categories', function ($queryBuilder) use ($query) {
                 $queryBuilder->where('name', 'like', "%{$query}%");
             })
             ->orWhereHas('tags', function ($queryBuilder) use ($query) {
                 $queryBuilder->where('name', 'like', "%{$query}%");
             })
+            ->orderBy('name')
+            ->take(10)
             ->get();
 
         return response()->json([
