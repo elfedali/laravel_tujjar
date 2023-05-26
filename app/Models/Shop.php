@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Shop extends Model
 {
@@ -23,7 +24,7 @@ class Shop extends Model
         'cover_photo',
         'is_enabled',
 
-        'is_approved',
+        'is_approved', // when the shop is approved by admin (boolean)
         'approved_at',
     ];
     /**
@@ -60,6 +61,11 @@ class Shop extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function favourites()
+    {
+        return $this->morphMany(Favourite::class, 'favouritable');
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -75,7 +81,7 @@ class Shop extends Model
 
     protected function generateUniqueSlug($name, $id = null)
     {
-        $slug = \Str::slug($name);
+        $slug = Str::slug($name);
         $count = Shop::where('id', '!=', $id)
             ->whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
 

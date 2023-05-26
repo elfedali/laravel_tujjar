@@ -120,4 +120,19 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $query->whereDoesntHave('shop');
     }
+
+    public function shop()
+    {
+        return $this->hasOne(Shop::class, 'owner_id');
+    }
+
+    public function favourites()
+    {
+        return $this->hasMany(Favourite::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

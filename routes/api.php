@@ -36,6 +36,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/user/me/photo', [\App\Http\Controllers\Api\UserPhotoController::class, 'deletePhoto']);
     Route::get('/user/me', [\App\Http\Controllers\Api\UserController::class, 'me']);
 
+    Route::post('/shop/{shop}/favourite', [\App\Http\Controllers\Api\FavouriteController::class, 'addFavourite']);
+    Route::delete('/shop/{shop}/favourite', [\App\Http\Controllers\Api\FavouriteController::class, 'removeFavourite']);
+    Route::get('/user/me/favourites', [\App\Http\Controllers\Api\FavouriteController::class, 'userFavourites']);
+
     require __DIR__ . '/api/admin.php';
 });
 
