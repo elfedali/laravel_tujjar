@@ -22,7 +22,17 @@ class Shop extends Model
         'logo_photo',
         'cover_photo',
         'is_enabled',
-        'is_verified',
+
+        'is_approved',
+        'approved_at',
+    ];
+    /**
+     * {@inheritdoc}
+     */
+    protected $casts = [
+        'is_enabled' => 'boolean',
+        'is_approved' => 'boolean',
+        'approved_at' => 'datetime'
     ];
 
     public function owner()

@@ -28,9 +28,11 @@ return new class extends Migration
             $table->string('logo_photo')->nullable();
             $table->string('cover_photo')->nullable();
 
-            $table->boolean('is_enabled')->default(true);
-            $table->boolean('is_verified')->default(false);
+            $table->bigInteger('view_count')->default(0);
 
+            $table->boolean('is_enabled')->default(true);
+            $table->boolean('is_approved')->default(false);
+            $table->timestamp('approved_at')->nullable();
 
 
             $table->timestamps();

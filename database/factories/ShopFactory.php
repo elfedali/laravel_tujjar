@@ -21,7 +21,8 @@ class ShopFactory extends Factory
             'name' => $this->faker->company(),
             'description' => $this->faker->paragraph(),
             'is_enabled' => $this->faker->boolean(),
-            'is_verified' => $this->faker->boolean(),
+            'is_approved' => $this->faker->boolean(),
+            'approved_at' => $this->faker->dateTime(),
             'created_at' => now(),
             'updated_at' => now(),
         ];
