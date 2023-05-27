@@ -11,48 +11,28 @@ class FavouriteController extends Controller
 {
     public function addFavourite(Request $request, Shop $shop)
     {
-
-        $user = $request->user();
-        (new Favourite())->user()->associate($user)->favouritable()->associate($shop)->save();
-
-        return response()->json([
-            'message' => 'Shop added to favourites'
-        ]);
-        /*
-        try {
-
-            $user = $request->user();
-            $favourite = new Favourite();
-            $favourite->user_id = $user->id;
-            $favourite->favouritable_id = $shop->id;
-            $favourite->favouritable_type = Shop::class;
-            $favourite->save();
-
-        } catch (\Exception $e) {
+        if ($shop->favourite()) {
+            return response()->json([
+                'message' => 'Shop added to favourites'
+            ]);
+        } else {
             return response()->json([
                 'message' => 'Shop already in favourites'
             ]);
         }
-        return response()->json([
-            'message' => 'Shop added to favourites'
-        ]);
-        */
     }
 
     public function removeFavourite(Request $request, Shop $shop)
     {
-        try {
-            $user = $request->user();
-            $favourite = $user->favourites()->where('favouritable_id', $shop->id)->first();
-            $favourite->delete();
-        } catch (\Exception $e) {
+        if ($shop->unfavourite()) {
+            return response()->json([
+                'message' => 'Shop removed from favourites'
+            ]);
+        } else {
             return response()->json([
                 'message' => 'Shop not in favourites'
             ]);
         }
-        return response()->json([
-            'message' => 'Shop removed from favourites'
-        ]);
     }
 
     public function userFavourites(Request $request)

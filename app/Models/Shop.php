@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Contracts\Favouritable;
+use App\Concerns\Favourites;
 
-class Shop extends Model
+class Shop extends Model implements Favouritable
 {
-    use HasFactory;
+    use HasFactory, Favourites;
 
     protected $fillable = [
         'owner_id',
@@ -61,11 +63,10 @@ class Shop extends Model
         return $this->hasMany(Review::class);
     }
 
-    public function favourites()
-    {
-        return $this->morphMany(Favourite::class, 'favouritable');
-    }
-
+    /**
+     * 
+     * {@inheritdoc}
+     */
     protected static function boot()
     {
         parent::boot();

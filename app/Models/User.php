@@ -110,29 +110,30 @@ class User extends Authenticatable implements MustVerifyEmail
         //$this->notify(new \App\Notifications\WelcomeEmail);
     }
 
-    // scope have a shop
-    public function scopeHaveShop($query)
+
+    public function isAdmin(): bool
     {
-        return $query->whereHas('shop');
+        return $this->role === self::ROLE_ADMIN;
     }
-    // scope don't have a shop
-    public function scopeDontHaveShop($query)
-    {
-        return $query->whereDoesntHave('shop');
-    }
+
 
     public function shop()
     {
         return $this->hasOne(Shop::class, 'owner_id');
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+    // Favorites
     public function favourites()
     {
         return $this->hasMany(Favourite::class);
     }
 
-    public function reviews()
-    {
-        return $this->hasMany(Review::class);
-    }
+    // public function favouriteShops()
+    // {
+    //     return $this->morphedByMany(Shop::class, 'favouritable')->withTimestamps();
+    // }
 }
