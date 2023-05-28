@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 
+use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
+use LaravelJsonApi\Laravel\Routing\Relationships;
+use LaravelJsonApi\Laravel\Routing\ResourceRegistrar;
+use LaravelJsonApi\Laravel\Http\Controllers\JsonApiController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -55,3 +60,35 @@ Route::get('/shop', [\App\Http\Controllers\Api\ShopController::class, 'index'])-
 Route::get('/shop/{shop}', [\App\Http\Controllers\Api\ShopController::class, 'show'])->name('shop.show');
 
 Route::any('/search', [\App\Http\Controllers\Api\SearchShopController::class, 'search'])->name('search');
+
+
+
+
+
+// JsonApiRoute::server('v1')
+//     ->prefix('v1')
+//     ->middleware('auth:sanctum')
+//     ->resources(function (ResourceRegistrar $server) {
+//         $server->resource('shops', \App\JsonApi\Shops\ShopsController::class);
+//         $server->resource('categories', \App\JsonApi\Categories\CategoriesController::class);
+//         $server->resource('tags', \App\JsonApi\Tags\TagsController::class);
+//         $server->resource('users', \App\JsonApi\Users\UsersController::class);
+//         $server->resource('reviews', \App\JsonApi\Reviews\ReviewsController::class);
+//     });
+
+
+JsonApiRoute::server('v1')
+    ->prefix('v1')
+    //->middleware('auth:sanctum')
+    ->resources(function (ResourceRegistrar $server) {
+        $server->resource('shops', JsonApiController::class)
+            //->readOnly()
+            ->only('index', 'show', 'store')
+            ->relationships(function (Relationships $relations) {
+                $relations->hasMany('categories');
+                $relations->hasMany('tags');
+                $relations->hasMany('reviews');
+                $relations->hasMany('images');
+                $relations->hasOne('owner');
+            });
+    });

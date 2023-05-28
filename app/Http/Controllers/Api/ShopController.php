@@ -124,6 +124,7 @@ class ShopController extends Controller
      */
     public function update(Request $request, Shop $shop)
     {
+
         try {
             $this->authorize('update-shop', $shop);
         } catch (\Exception $e) {

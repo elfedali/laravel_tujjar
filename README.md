@@ -7,3 +7,7 @@ Category
 Shop
 Images
 Review
+
+# Json Api
+
+Implimentation of Json Api https://jsonapi.org/ for Laravel

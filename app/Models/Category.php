@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Category extends Model
 {
@@ -11,19 +12,21 @@ class Category extends Model
 
     protected $fillable = [
         'name',
+        'position',
+        'is_enabled',
 
     ];
 
     protected static function booted(): void
     {
         static::creating(function (Category $category) {
-            $category->slug = \Str::slug($category->name);
+            $category->slug = Str::slug($category->name);
         });
     }
     // when update category, slug will be updated
     public function updateSlug(): void
     {
-        $this->slug = \Str::slug($this->name);
+        $this->slug = Str::slug($this->name);
         $this->save();
     }
 

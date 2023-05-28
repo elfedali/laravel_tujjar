@@ -19,6 +19,16 @@ class Handler extends ExceptionHandler
     ];
 
     /**
+     * A list of the exception types that are not reported.
+     *
+     * @var array
+     */
+    protected $dontReport = [
+        \LaravelJsonApi\Core\Exceptions\JsonApiException::class,
+    ];
+
+
+    /**
      * Register the exception handling callbacks for the application.
      */
     public function register(): void
@@ -26,5 +36,11 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
+        // Register the JSON:API exception handler.
+
+        $this->renderable(
+            \LaravelJsonApi\Exceptions\ExceptionParser::make()->renderable()
+        );
     }
 }

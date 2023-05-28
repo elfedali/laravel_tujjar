@@ -28,6 +28,8 @@ return new class extends Migration
 
             $table->string('photo')->nullable();
 
+            $table->boolean('is_enabled')->default(true);
+
             $table->timestamp('email_verified_at')->nullable();
             $table->string('email_verification_token')->nullable();
 
