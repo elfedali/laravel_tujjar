@@ -91,4 +91,7 @@ JsonApiRoute::server('v1')
                 $relations->hasMany('images');
                 $relations->hasOne('owner');
             });
+
+        $server->resource('categories', JsonApiController::class)
+            ->readOnly();
     });
