@@ -58,6 +58,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_enabled' => 'boolean',
     ];
 
     /**
@@ -110,13 +111,6 @@ class User extends Authenticatable implements MustVerifyEmail
         // send welcome email
         //$this->notify(new \App\Notifications\WelcomeEmail);
     }
-
-
-    public function isAdmin(): bool
-    {
-        return $this->role === self::ROLE_ADMIN;
-    }
-
 
     public function shop()
     {

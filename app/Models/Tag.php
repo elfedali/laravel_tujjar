@@ -2,32 +2,41 @@
 
 namespace App\Models;
 
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
     use HasFactory;
+    use HasSlug;
 
     protected $fillable = [
         'name',
+        'position',
+        'is_enabled',
     ];
 
-    protected static function booted(): void
-    {
-        static::creating(function (Tag $tag) {
-            $tag->slug = \Str::slug($tag->name);
-        });
-    }
-    // when update tag, slug will be updated
-    public function updateSlug(): void
-    {
-        $this->slug = \Str::slug($this->name);
-        $this->save();
-    }
+    /**
+     * {@inheritdoc}
+     */
+    protected $casts = [
+        'is_enabled' => 'boolean',
+    ];
 
     public function shops()
     {
         return $this->belongsToMany(Shop::class, 'shop_tag', 'tag_id', 'shop_id');
+    }
+
+    /**
+     * Get the options for generating the slug.
+     */
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
     }
 }

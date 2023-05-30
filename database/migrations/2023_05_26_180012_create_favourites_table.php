@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
 
-
             $table->foreignId('favouritable_id');
             $table->string('favouritable_type');
             $table->unique(['user_id', 'favouritable_id', 'favouritable_type']);

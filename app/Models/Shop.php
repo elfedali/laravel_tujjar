@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use App\Contracts\Favouritable;
 use App\Concerns\Favourites;
 
 class Shop extends Model implements Favouritable
 {
-    use HasFactory, Favourites;
+    use HasFactory;
+    use Favourites;
+    use HasSlug;
 
     protected $fillable = [
         'owner_id',
@@ -64,28 +67,12 @@ class Shop extends Model implements Favouritable
     }
 
     /**
-     * 
-     * {@inheritdoc}
+     * Get the options for generating the slug.
      */
-    protected static function boot()
+    public function getSlugOptions(): SlugOptions
     {
-        parent::boot();
-
-        static::creating(function ($shop) {
-            $shop->slug = $shop->generateUniqueSlug($shop->name);
-        });
-
-        static::updating(function ($shop) {
-            $shop->slug = $shop->generateUniqueSlug($shop->name, $shop->id);
-        });
-    }
-
-    protected function generateUniqueSlug($name, $id = null)
-    {
-        $slug = Str::slug($name);
-        $count = Shop::where('id', '!=', $id)
-            ->whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
-
-        return $count ? "{$slug}-{$count}" : $slug;
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
     }
 }
