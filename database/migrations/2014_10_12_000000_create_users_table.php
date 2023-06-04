@@ -36,6 +36,13 @@ return new class extends Migration
             $table->timestamp('phone_number_verified_at')->nullable();
             $table->string('phone_number_verification_token')->nullable();
 
+            // google
+            $table->string('google_id')->nullable();
+            $table->text('google_token')->nullable();
+            $table->string('google_refresh_token')->nullable();
+
+
+
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

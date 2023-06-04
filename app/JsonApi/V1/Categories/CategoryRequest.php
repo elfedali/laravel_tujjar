@@ -18,13 +18,9 @@ class CategoryRequest extends ResourceRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', Rule::unique('categories')->ignore($this->route()->parameter('category'))],
-            'description' => ['string'],
+            // 'slug' => ['required', 'string', 'max:255', Rule::unique('categories')->ignore($this->route()->parameter('category'))],
+            'position' => ['integer'],
             'isEnabled' => ['boolean'],
-            'tags' => JsonApiRule::toMany(),
-            'categories' => JsonApiRule::toMany(),
-            'images' => ['array', 'max:5'],
-
         ];
     }
 }

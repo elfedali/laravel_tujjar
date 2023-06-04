@@ -26,12 +26,17 @@ class ShopSchema extends Schema
      */
     public static string $model = Shop::class;
 
+
+    protected ?array $defaultPagination = ['number' => 1, 'size' => 10];
+
+
     /**
      * The maximum include path depth.
      *
      * @var int
      */
     protected int $maxDepth = 3;
+
 
     /**
      * Get the resource fields.

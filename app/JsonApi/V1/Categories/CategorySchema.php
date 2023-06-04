@@ -11,6 +11,7 @@ use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
+use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 
 class CategorySchema extends Schema
@@ -32,10 +33,10 @@ class CategorySchema extends Schema
     {
         return [
             ID::make(),
-            Str::make('name'),
+            Str::make('name')->sortable(),
             Str::make('slug'),
             Number::make('position'),
-            Str::make('isEnabled'),
+            Boolean::make('isEnabled'),
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
         ];

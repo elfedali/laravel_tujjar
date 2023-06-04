@@ -2,8 +2,10 @@
 
 namespace App\Policies;
 
+
 use App\Models\Category;
 use App\Models\User;
+
 use Illuminate\Auth\Access\Response;
 
 class CategoryPolicy
@@ -11,9 +13,9 @@ class CategoryPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -30,7 +32,10 @@ class CategoryPolicy
      */
     public function create(User $user): bool
     {
-        //
+        if ($user->role === User::ROLE_SUPER_ADMIN || $user->role === User::ROLE_ADMIN) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -38,7 +43,7 @@ class CategoryPolicy
      */
     public function update(User $user, Category $category): bool
     {
-        //
+        return $this->create($user);
     }
 
     /**
@@ -46,7 +51,7 @@ class CategoryPolicy
      */
     public function delete(User $user, Category $category): bool
     {
-        //
+        return $this->create($user);
     }
 
     /**
@@ -54,7 +59,7 @@ class CategoryPolicy
      */
     public function restore(User $user, Category $category): bool
     {
-        //
+        return $this->create($user);
     }
 
     /**
@@ -62,6 +67,6 @@ class CategoryPolicy
      */
     public function forceDelete(User $user, Category $category): bool
     {
-        //
+        return $this->create($user);
     }
 }
