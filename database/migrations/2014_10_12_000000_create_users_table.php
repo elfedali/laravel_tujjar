@@ -37,11 +37,8 @@ return new class extends Migration
             $table->string('phone_number_verification_token')->nullable();
 
             // google
-            $table->string('google_id')->nullable();
-            $table->text('google_token')->nullable();
-            $table->string('google_refresh_token')->nullable();
-
-
+            $table->string('provider')->nullable();
+            $table->string('provider_id')->nullable();
 
             $table->string('password');
             $table->rememberToken();

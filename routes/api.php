@@ -21,6 +21,7 @@ use LaravelJsonApi\Laravel\Http\Controllers\JsonApiController;
 
 Route::post('/v1/auth/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
 Route::post('/v1/auth/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
+Route::post('/v1/auth/login/google', [\App\Http\Controllers\Api\AuthController::class, 'loginWithGoogle']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('category', \App\Http\Controllers\Api\CategoryController::class);

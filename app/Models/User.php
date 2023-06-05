@@ -13,9 +13,9 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
-    const ROLE_ADMIN = 'ROLE_ADMIN';
-    const ROLE_USER = 'ROLE_USER';
+    const ROLE_SUPER_ADMIN = 'role_super_admin';
+    const ROLE_ADMIN = 'role_admin';
+    const ROLE_USER = 'role_user';
 
 
     /**
@@ -38,6 +38,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
         'photo',
         'is_enabled',
+
+        'provider',
+        'provider_id',
     ];
 
     /**
