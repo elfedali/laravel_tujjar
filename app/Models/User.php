@@ -129,4 +129,16 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Favourite::class);
     }
+
+    // public function favouriteShops()
+    // {
+    //     return $this->belongsToMany(Shop::class, 'favourites', 'user_id', 'favouritable_id')
+    //         ->where('favouritable_type', Shop::class);
+    // }
+
+    // scope email like
+    public function scopeEmailLike($query, $email)
+    {
+        return $query->where('email', 'like', '%' . $email . '%');
+    }
 }

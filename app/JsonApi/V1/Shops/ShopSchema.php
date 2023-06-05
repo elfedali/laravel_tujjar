@@ -3,12 +3,14 @@
 namespace App\JsonApi\V1\Shops;
 
 use App\Models\Shop;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsToMany;
 use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
+use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasOne;
@@ -82,6 +84,8 @@ class ShopSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            Where::make('name'),
+            Scope::make('nameLike')
         ];
     }
 

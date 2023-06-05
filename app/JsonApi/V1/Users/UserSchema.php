@@ -8,6 +8,8 @@ use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
+use LaravelJsonApi\Eloquent\Filters\Scope;
+use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
 
@@ -32,14 +34,23 @@ class UserSchema extends Schema
             ID::make(),
             Str::make('email'),
             Str::make('role'),
+
             Str::make('firstName'),
             Str::make('lastName'),
             Str::make('phoneNumber'),
+
             Str::make('address'),
             Str::make('city'),
             Str::make('zipCode'),
             Str::make('country'),
+
+            Str::make('photo'),
+
             Str::make('isEnabled'),
+
+            Str::make('emailVerifiedAt'),
+
+            Str::make('phoneNumberVerifiedAt'),
 
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
@@ -55,6 +66,10 @@ class UserSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            Where::make('email'),
+            Scope::make('emailLike')
+
+
         ];
     }
 

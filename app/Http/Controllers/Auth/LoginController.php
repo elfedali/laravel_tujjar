@@ -8,6 +8,10 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * I write this code if you want to use the google login, in web not api
+ * check routes/web.php
+ */
 class LoginController extends Controller
 {
     public function redirectToGoogle()

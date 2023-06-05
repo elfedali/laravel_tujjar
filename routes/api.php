@@ -94,4 +94,6 @@ JsonApiRoute::server('v1')
             });
 
         $server->resource('categories', JsonApiController::class);
+        $server->resource('tags', JsonApiController::class);
+        $server->resource('users', JsonApiController::class);
     });

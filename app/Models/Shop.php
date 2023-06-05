@@ -75,4 +75,9 @@ class Shop extends Model implements Favouritable
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
     }
+    // scope where name like
+    public function scopeNameLike($query, $name)
+    {
+        return $query->where('name', 'like', '%' . $name . '%');
+    }
 }
