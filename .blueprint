@@ -1,0 +1,8 @@
+models:
+    Category: {  }
+    Favourite: {  }
+    Image: {  }
+    Review: {  }
+    Shop: {  }
+    Tag: {  }
+    User: {  }

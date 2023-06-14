@@ -51,7 +51,7 @@ class AuthController extends Controller
                 'status' => true,
                 'message' => 'Login successful',
                 'access_token' => $user->createToken('auth_token')->plainTextToken,
-                'data' => $user
+                'user' => $user
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -88,7 +88,7 @@ class AuthController extends Controller
                 ['password' => Hash::make($request->password)]
             ));
 
-            event(new Registered($user)); // send email verification to user
+            // event(new Registered($user)); // send email verification to user
 
             $user->refresh(); // refresh user data
 
