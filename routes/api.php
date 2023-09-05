@@ -97,3 +97,7 @@ JsonApiRoute::server('v1')
         $server->resource('tags', JsonApiController::class);
         $server->resource('users', JsonApiController::class);
     });
+
+
+// About
+Route::get('/about', [\App\Http\Controllers\Api\AboutController::class, 'index']);
